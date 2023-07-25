@@ -1,0 +1,9 @@
+// Todo:
+
+1. Make Personal Details Page Readonly.
+2. Account Details Should show Account Details Only.
+3. Add withdraw/deposit button in Account Details page.
+4. Account Statement will have withdraw & Deposits
+5. Transaction History will contain all the data.
+
+* Send/Receive money. if I make it in time.

@@ -12,13 +12,18 @@ import {
   // Stack,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import PageLayout from '../../layout/PageLayout';
+import PageLayout from '../../../layout/PageLayout';
 import { useEffect } from 'react';
-import ApiService from '../../services/ApiService';
-import { setCustomers } from '../../store/customerSlice';
+import ApiService from '../../../services/ApiService';
+import { setCustomers } from '../../../store/customerSlice';
 import { useSelector, useDispatch } from 'react-redux';
+// Notification import.
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ICustomer } from '../../../types';
 
-const Accounts = () => {
+const Users = () => {
+  const notify = (m: string) => toast(m);
   const { customers } = useSelector((state: any) => state.store);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -35,6 +40,7 @@ const Accounts = () => {
       {/* <Button color='success' size='large' variant='outlined'>
         <Link to='/admin/customers/create'>+ Customer</Link>
       </Button> */}
+      <ToastContainer />
       <Grid>
         <Box
           sx={(theme) => ({
@@ -46,11 +52,11 @@ const Accounts = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Account ID.</TableCell>
-                  <TableCell>Account No.</TableCell>
-                  <TableCell align="right">C Name</TableCell>
-                  <TableCell align="right">Type</TableCell>
-                  <TableCell align="right">Ammount</TableCell>
+                  <TableCell>Customer ID:</TableCell>
+                  <TableCell align="center">Email</TableCell>
+                  <TableCell align="right">Name</TableCell>
+                  <TableCell align="right">Account No.</TableCell>
+                  <TableCell align="right">Account Type</TableCell>
                   <TableCell align="center">View</TableCell>
                   <TableCell align="center">Update</TableCell>
                   <TableCell align="center">Delete</TableCell>
@@ -62,12 +68,12 @@ const Accounts = () => {
                     <TableRow key={idx}>
                       {/* {JSON.stringify(customer)} */}
                       <TableCell component="th" scope="row">
-                        {customer.id}
+                        {customer.id.substring(0, 8)}
                       </TableCell>
                       <TableCell align="right">{customer.email}</TableCell>
                       <TableCell align="right">{customer.first_name}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_number}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_type}</TableCell>
+                      <TableCell align="right">{customer.account.account_number}</TableCell>
+                      <TableCell align="right">{customer.account.account_type}</TableCell>
                       <TableCell>
                         <Button variant="outlined" component={Link} to={`/admin/customers/${customer.id}`} size="small" color="primary">
                           View
@@ -87,7 +93,16 @@ const Accounts = () => {
                       <TableCell align="right">
                         <Button
                           onClick={() => {
-                            console.log("clicked")
+                            ApiService.deleteCustomer(customer.id)
+                              .then((response) => {
+                                if (response.status === 200) {
+                                  notify('Customer deleted.');
+                                  dispatch(setCustomers(customers.filter((c: ICustomer) => c.id !== customer.id)));
+                                }
+                              }).catch((error) => {
+                                notify('Customer deleted.');
+                                console.log(error);
+                              })
                           }}
                           variant="outlined"
                           color="error"
@@ -107,4 +122,4 @@ const Accounts = () => {
   )
 }
 
-export default Accounts;
+export default Users;

@@ -14,6 +14,7 @@ import axios from "axios";
 import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ApiService from "../services/ApiService";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -26,22 +27,34 @@ const Login = () => {
 
     const [form, setForm] = useState({ email: '', password: '' });
     const handleLogin = async () => {
-        const response = await axios.post('/api/auth/login', form);
+        const response = await ApiService.getOtp(form);
         if (response.status === 200) {
+            setShowOTP(true);
             // Handle Login.
-            dispatch(login(response.data));
-            navigate('/customer');
+            // dispatch(login(response.data));
+            // navigate('/customer');
         }
         // Error Sending OTP.
     }
     const handleSendOtp = async () => {
-        const response = await axios.post('/api/auth/otp', form);
-        if (response.status === 200) {
-            // Handle Login.
-            dispatch(login(response.data));
-            navigate('/customer');
+        try {
+            const response = await ApiService.getOtp(form);
+            console.log(response);
+            if (response.status === 200) {
+                // setShowOTP(true);
+                // Handle Login.
+                // if(response.data.user.role === 'admin') {
+                //     dispatch(login(response.data));
+                //     navigate('/admin');
+                //     return;
+                // }
+                // dispatch(login(response.data));
+                // navigate('/customer');
+            }
+            // Error Sending OTP.
+        } catch (error) {
+            console.log(error);
         }
-        // Error Sending OTP.
     }
 
     return (

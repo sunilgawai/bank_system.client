@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button, Divider, Grid, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import PageLayout from '../../layout/PageLayout';
+import PageLayout from '../../../layout/PageLayout';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const location: {
@@ -17,7 +17,7 @@ const location: {
     cities: []
 }
 
-const View = () => {
+const AccountView = () => {
 
     return (
         <>
@@ -280,7 +280,7 @@ const View = () => {
                                         />
                                     </Stack>
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <Button
                                         disableElevation
                                         fullWidth
@@ -289,11 +289,9 @@ const View = () => {
                                         variant="contained"
                                         color="primary"
                                     >
-                                        {/* <Link to="admin/update/78645"> */}
                                         Update Details.
-                                        {/* </Link> */}
                                     </Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </form>
                     )}
@@ -304,4 +302,4 @@ const View = () => {
     );
 };
 
-export default View;
+export default AccountView;

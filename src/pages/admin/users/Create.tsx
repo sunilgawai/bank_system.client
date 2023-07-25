@@ -13,28 +13,29 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import PageLayout from '../../layout/PageLayout';
-import { Link, useParams } from 'react-router-dom';
-import ApiService from '../../services/ApiService';
-import { useEffect } from 'react';
-import { getCustomer } from '../../store/customerSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import PageLayout from '../../../layout/PageLayout';
+import ApiService from '../../../services/ApiService';
+
+// Notification import.
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const initCustomerData = {
-  first_name: 'john',
-  middle_name: 'cena',
-  last_name: 'doe',
-  phone: '1234567890',
-  email: 'johndoe@gmail.com',
+  first_name: '',
+  middle_name: '',
+  last_name: '',
+  phone: '',
+  email: '',
   date_of_birth: '',
-  gender: 'MALE',
-  document_type: 'AADHAR',
-  document_number: '250541957365',
-  state: 'maharashtra',
-  city: 'pune',
-  district: 'haveli',
-  landmark: 'Near Dr. D. Y. Patil College.',
-  account_type: 'CURRENT',
-  account_balance: '500.00',
+  gender: '',
+  document_type: '',
+  document_number: '',
+  state: '',
+  city: '',
+  district: '',
+  landmark: '',
+  account_type: '',
+  account_balance: '',
   submit: ''
 }
 
@@ -49,43 +50,26 @@ const location: {
   cities: []
 }
 
-const Update = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { customer } = useSelector((state: any) => state.store);
-  useEffect(() => {
-    // dispatch(getCustomer(id));
-    if (!id) return;
-    ApiService.viewCustomer(id).then((response) => {
-      console.log("res", response.data);
-    }).catch((err) => {
-      console.log("err", err)
-    })
-  }, [])
+const Create = () => {
+  const notify = (message: string) => toast(message);
 
-  console.log("customer", customer);
-  // if (!customer) {
-  //   return <div>Loading</div>
-  // }
   return (
     <>
       <PageLayout>
-        <Button color='success' size='large' variant='outlined'>
-          <Link to='/admin/customers'>Go Back</Link>
-        </Button>
-        <Divider sx={{ mb: 2 }} />
+        <Divider sx={{ mb: 4 }} />
+        <ToastContainer />
         <Formik
           initialValues={initCustomerData}
           validationSchema={Yup.object().shape({
             first_name: Yup.string().max(255).required('First Name is required'),
             middle_name: Yup.string().max(255).required('Middle Name is required'),
             last_name: Yup.string().max(255).required('Last Name is required'),
-            phone: Yup.string().max(12).required('Phone No. is required'),
+            phone: Yup.string().min(10).max(10).required('Phone No. is required'),
             email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
             date_of_birth: Yup.string().required('Date of Birth is required'),
             gender: Yup.string().max(255).required('Gender is required'),
             document_type: Yup.string().max(255).required('Document type is required'),
-            document_number: Yup.string().max(255).required('Document No. is required'),
+            document_number: Yup.string().min(10).max(12).required('Document No. is required'),
             state: Yup.string().max(255).required('State is required'),
             city: Yup.string().max(255).required('City is required'),
             district: Yup.string().max(255).required('District is required'),
@@ -94,20 +78,26 @@ const Update = () => {
             account_balance: Yup.string().max(255).required('Account balance is required')
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
-            try {
-              setStatus({ success: true });
-              console.log("values", values)
-              const results = await ApiService.storeCustomer(values);
-              console.log("results", results);
-              setSubmitting(false);
-              // resetForm();
-              setStatus({ success: false });
-              setSubmitting(false);
-            } catch (err) {
-              setStatus({ success: false });
-              setErrors({ submit: 'response.data.message' });
-              setSubmitting(false);
-            }
+            setStatus({ success: true });
+            console.log("values", values)
+            ApiService.storeCustomer(values)
+              .then((response) => {
+                // console.log("res", response);
+                if (response.status === 200) {
+                  notify("Customer stored.");
+                  setSubmitting(false);
+                  setStatus({ success: true });
+                }
+                setSubmitting(false);
+                resetForm();
+              }).catch((err) => {
+                // console.log(err);
+                setStatus({ success: false });
+                notify("error storing customer.");
+                setErrors({ submit: err.response.data.message });
+                setSubmitting(false);
+              })
+
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, setFieldValue, isSubmitting, touched, values }) => (
@@ -228,9 +218,10 @@ const Update = () => {
                         label="Date Of Birth"
                         value={values.date_of_birth}
                         onChange={(newValue) => {
-                          const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
+                          // const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
                           // console.log("DOB", { formattedDate, newValue })
-                          setFieldValue('date_of_birth', formattedDate); // Set the selected date using setFieldValue
+
+                          setFieldValue('date_of_birth', '30/09/2001'); // Set the selected date using setFieldValue
                         }}
                       />
                     </LocalizationProvider>
@@ -255,26 +246,27 @@ const Update = () => {
                       <FormControlLabel value="male" control={<Radio />} label="Male" />
                       <FormControlLabel value="other" control={<Radio />} label="Other" />
                     </RadioGroup>
-                    {touched.date_of_birth && errors.date_of_birth && (
+                    {touched.gender && errors.gender && (
                       <FormHelperText error id="helper-text-email-signup">
-                        {errors.date_of_birth}
+                        {errors.gender}
                       </FormHelperText>
                     )}
                   </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Stack spacing={1}>
-                    <InputLabel id="document-type">Document Type*</InputLabel>
+                    <InputLabel id="document_type">Document Type*</InputLabel>
                     <Select
                       fullWidth
-                      labelId="document-type"
-                      id="document-type"
-                      type="document-type"
-                      name="document-type"
-                      label="document-type"
+                      labelId="document_type"
+                      id="document_type"
+                      type="document_type"
+                      name="document_type"
+                      label="document_type"
                       onBlur={handleBlur}
                       error={Boolean(touched.document_type && errors.document_type)}
                       value={values.document_type}
+                      onChange={handleChange}
                     >
                       <MenuItem value='AADHAR'>
                         AADHAR
@@ -508,16 +500,17 @@ const Update = () => {
                     variant="contained"
                     color="primary"
                   >
-                    Store Customer
+                    Create Account
                   </Button>
                 </Grid>
               </Grid>
             </form>
           )}
         </Formik>
+        <Divider sx={{ mt: 4 }} />
       </PageLayout>
     </>
   );
 };
 
-export default Update;
+export default Create;

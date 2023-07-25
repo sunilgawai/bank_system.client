@@ -1,22 +1,26 @@
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import React from 'react'
 
 const Header = () => {
     return (
         <Box
             style={{
                 width: '100%',
-                backgroundColor: 'royalblue',
+                backgroundColor: 'lightgray',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center'
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                padding: '10px'
             }}>
-            <Typography style={{ width: '100%' }}>
+            <Typography style={{ width: '10%' }}>
                 <AccountBalanceOutlinedIcon fontSize='large' />
             </Typography>
+            <Button
+                component={Link} to="/login" variant='text' color='primary'>
+                Login
+            </Button>
             <Typography>
                 About
             </Typography>

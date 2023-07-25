@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { useState } from 'react';
 
 // material-ui
 import { Button, Divider, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Select, MenuItem } from '@mui/material';
@@ -13,27 +14,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import PageLayout from '../../layout/PageLayout';
-import ApiService from '../../services/ApiService';
-
-const initCustomerData = {
-  first_name: 'john',
-  middle_name: 'cena',
-  last_name: 'doe',
-  phone: '1234567890',
-  email: 'johndoe@gmail.com',
-  date_of_birth: '',
-  gender: 'MALE',
-  document_type: 'AADHAR',
-  document_number: '250541957365',
-  state: 'maharashtra',
-  city: 'pune',
-  district: 'haveli',
-  landmark: 'Near Dr. D. Y. Patil College.',
-  account_type: 'CURRENT',
-  account_balance: '500.00',
-  submit: ''
-}
+import PageLayout from '../../../layout/PageLayout';
+import { Link, useParams } from 'react-router-dom';
+import ApiService from '../../../services/ApiService';
+import { useEffect } from 'react';
+import { ICustomer } from '../../../types';
+// Notification import.
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const location: {
@@ -46,14 +34,55 @@ const location: {
   cities: []
 }
 
-const Create = () => {
+const Update = () => {
+  const notify = (message: string) => toast(message);
+  const [customer, setCustomer] = useState<ICustomer>({} as ICustomer);
+  const { id } = useParams();
+  useEffect(() => {
+    if (!id) return;
+    ApiService.viewCustomer(id).then((response) => {
+      console.log("customer", response.data);
+      if (response.status === 200) {
+        setCustomer(response.data);
+      }
+    }).catch((err) => {
+      notify('error loading customer.');
+      console.log("err", err)
+    })
+  }, [])
 
+  console.log("customer", customer);
+  if (Object.keys(customer).length === 0) {
+    return <div>Loading</div>
+  }
   return (
     <>
       <PageLayout>
-        <Divider sx={{ mb: 4 }} />
+        <Button color='success' size='large' variant='outlined'>
+          <Link to='/admin/customers'>Go Back</Link>
+        </Button>
+        <Divider sx={{ mb: 2 }} />
+        <ToastContainer />
         <Formik
-          initialValues={initCustomerData}
+          initialValues={{
+            id: id,
+            first_name: customer.first_name,
+            middle_name: customer.middle_name || '',
+            last_name: customer.last_name || '',
+            phone: customer.phone || '',
+            email: customer.email || '',
+            date_of_birth: customer.date_of_birth || '',
+            gender: customer.gender || '',
+            document_type: customer.document.document_type || '',
+            document_number: customer.document.document_number || '',
+            state: customer.address.state || '',
+            city: customer.address.city || '',
+            district: customer.address.district || '',
+            landmark: customer.address.landmark || '',
+            account_type: customer.account.account_type || '',
+            account_balance: customer.account.account_balance || '',
+            submit: ''
+          }}
           validationSchema={Yup.object().shape({
             first_name: Yup.string().max(255).required('First Name is required'),
             middle_name: Yup.string().max(255).required('Middle Name is required'),
@@ -72,23 +101,25 @@ const Create = () => {
             account_balance: Yup.string().max(255).required('Account balance is required')
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
-            setStatus({ success: true });
-            console.log("values", values)
-            // const results = await ApiService.storeCustomer(values);
-            ApiService.storeCustomer(values)
-              .then((response) => {
-                console.log("res", response);
+            try {
+              setStatus({ success: true });
+              console.log("values", values)
+              const results = await ApiService.updateCustomer(values);
+              console.log("results", results);
+              if (results.status === 200) {
+                notify("Customer data updated.")
                 setSubmitting(false);
                 // resetForm();
-                setStatus({ success: false });
+                setStatus({ success: true });
                 setSubmitting(false);
-              }).catch((err) => {
-                console.log(err);
-                setStatus({ success: false });
-                setErrors({ submit: err.response.data.message });
-                setSubmitting(false);
-              })
-
+              }
+              resetForm();
+            } catch (err) {
+              console.log("error in update", err);
+              setStatus({ success: false });
+              setErrors({ submit: 'response.data.message' });
+              setSubmitting(false);
+            }
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, setFieldValue, isSubmitting, touched, values }) => (
@@ -201,6 +232,7 @@ const Create = () => {
                     )}
                   </Stack>
                 </Grid>
+                {/* Date Of Birth */}
                 <Grid item xs={12} md={6}>
                   <Stack spacing={1}>
                     <InputLabel htmlFor="date-of-birth">Date fo Birth*</InputLabel>
@@ -211,7 +243,6 @@ const Create = () => {
                         onChange={(newValue) => {
                           // const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
                           // console.log("DOB", { formattedDate, newValue })
-
                           setFieldValue('date_of_birth', '30/09/2001'); // Set the selected date using setFieldValue
                         }}
                       />
@@ -233,9 +264,9 @@ const Create = () => {
                       value={values.gender}
                       onChange={handleChange}
                     >
-                      <FormControlLabel value="female" control={<Radio />} label="Female" />
-                      <FormControlLabel value="male" control={<Radio />} label="Male" />
-                      <FormControlLabel value="other" control={<Radio />} label="Other" />
+                      <FormControlLabel checked={values.gender === 'FEMALE'} value="FEMALE" control={<Radio />} label="Female" />
+                      <FormControlLabel checked={values.gender === 'MALE'} value="MALE" control={<Radio />} label="Male" />
+                      <FormControlLabel checked={values.gender === 'OTHER'} value="OTHER" control={<Radio />} label="Other" />
                     </RadioGroup>
                     {touched.date_of_birth && errors.date_of_birth && (
                       <FormHelperText error id="helper-text-email-signup">
@@ -270,7 +301,7 @@ const Create = () => {
                     </Select>
                     {touched.document_type && errors.document_type && (
                       <FormHelperText error id="helper-text-last_name-signup">
-                        {errors.document_type}
+                        {/* {errors.document_type} */}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -291,7 +322,7 @@ const Create = () => {
                     />
                     {touched.document_number && errors.document_number && (
                       <FormHelperText error id="helper-text-first_name-signup">
-                        {errors.document_number}
+                        {/* {errors.document_number} */}
                       </FormHelperText>
                     )}
                   </Stack>
@@ -391,7 +422,7 @@ const Create = () => {
                       </MenuItem>
                     ))} */}
                       <MenuItem value='haveli'>
-                        haveli
+                        bhosari
                       </MenuItem>
                     </Select>
                     {touched.district && errors.district && (
@@ -490,17 +521,16 @@ const Create = () => {
                     variant="contained"
                     color="primary"
                   >
-                    Create Account
+                    Update Customer
                   </Button>
                 </Grid>
               </Grid>
             </form>
           )}
         </Formik>
-        <Divider sx={{ mt: 4 }} />
       </PageLayout>
     </>
   );
 };
 
-export default Create;
+export default Update;

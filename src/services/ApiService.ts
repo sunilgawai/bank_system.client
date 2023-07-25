@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { FormValues } from "../types";
+import { IFormValues } from "../types";
 const baseURL = "http://localhost:4000";
 class ApiService {
   static apiServer = axios.create({
@@ -35,13 +35,30 @@ class ApiService {
   //     });
   // };
 
-  static login = ({ email, password }: { email: string; password: string }) => {
+  static getOtp = (body: {
+    email: string;
+    password: string;
+  }): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
-        .post("/api/auth/login", {
-          email,
-          password,
+        .post("/api/auth/generate-otp", body)
+        .then((response) => {
+          return resolve(response);
         })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
+  static verifyOtp = (body: {
+    email: string;
+    password: string;
+    otp: string;
+  }): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post("/api/auth/verify-otp", body)
         .then((response) => {
           return resolve(response);
         })
@@ -66,7 +83,7 @@ class ApiService {
   //     });
   // };
 
-  static getCountries = () => {
+  static getCountries = (): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get("/api/location/countries?country")
@@ -79,7 +96,7 @@ class ApiService {
     });
   };
 
-  static getStates = (countryId: number) => {
+  static getStates = (countryId: number): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/location/states?country=${countryId}`)
@@ -92,7 +109,7 @@ class ApiService {
     });
   };
 
-  static getCities = (stateId: number) => {
+  static getCities = (stateId: number): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/location/cities?state=${stateId}`)
@@ -105,7 +122,7 @@ class ApiService {
     });
   };
 
-  static getDepartments = () => {
+  static getDepartments = (): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/departments`)
@@ -118,7 +135,7 @@ class ApiService {
     });
   };
 
-  static getKycList = () => {
+  static getKycList = (): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/kyc`)
@@ -131,7 +148,7 @@ class ApiService {
     });
   };
 
-  static storeCustomer = (formValues: FormValues) => {
+  static storeCustomer = (formValues: IFormValues): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .post("/api/admin/customers", formValues)
@@ -170,10 +187,10 @@ class ApiService {
     });
   };
 
-  static deleteCustomer = (id: number) => {
+  static deleteCustomer = (id: number): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
-        .delete(`/api/customer/${id}`)
+        .delete(`/api/admin/customers/${id}`)
         .then((response) => {
           return resolve(response);
         })
@@ -183,28 +200,18 @@ class ApiService {
     });
   };
 
-  // static updateCustomer = ({ id, first_name, last_name, country, state, city, email, phone, shop, kyc }: object) => {
-  //     return new Promise((resolve, reject) => {
-  //         this.apiServer
-  //             .put(`/api/customer/${id}`, {
-  //                 first_name,
-  //                 last_name,
-  //                 country,
-  //                 state,
-  //                 city,
-  //                 email,
-  //                 phone,
-  //                 shop,
-  //                 kyc
-  //             })
-  //             .then((response) => {
-  //                 return resolve(response);
-  //             })
-  //             .catch((error) => {
-  //                 return reject(error);
-  //             });
-  //     });
-  // };
+  static updateCustomer = (body: any): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .put(`/api/admin/customers/${body.id}`, body)
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 }
 
 export default ApiService;

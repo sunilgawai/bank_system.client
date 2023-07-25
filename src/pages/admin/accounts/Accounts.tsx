@@ -12,22 +12,25 @@ import {
   // Stack,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import PageLayout from '../../layout/PageLayout';
-import { useEffect } from 'react';
-import ApiService from '../../services/ApiService';
-import { setCustomers } from '../../store/customerSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import PageLayout from '../../../layout/PageLayout';
+import { useEffect, useState } from 'react';
+import AccountService from '../../../services/AccountService';
+import { IAccount } from '../../../types';
 
-const Transactions = () => {
-  const { customers } = useSelector((state: any) => state.store);
-  const dispatch = useDispatch();
+// Notification import.
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const Accounts = () => {
+  const notify = (message: string) => toast(message);
+  const [accounts, setAccounts] = useState<IAccount[]>();
   useEffect(() => {
-    ApiService.getCustomers()
+    AccountService.getAccounts()
       .then((results) => {
-        console.log("customers", results.data);
-        dispatch(setCustomers(results.data));
+        setAccounts(results.data);
+        // console.log("accounts", results.data);
       }).catch((err) => {
-        console.log("customers", err);
+        console.log("accounts", err);
       })
   }, []);
   return (
@@ -35,6 +38,7 @@ const Transactions = () => {
       {/* <Button color='success' size='large' variant='outlined'>
         <Link to='/admin/customers/create'>+ Customer</Link>
       </Button> */}
+      <ToastContainer />
       <Grid>
         <Box
           sx={(theme) => ({
@@ -46,9 +50,9 @@ const Transactions = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Transaction ID:</TableCell>
-                  <TableCell align="center">From</TableCell>
-                  <TableCell align="right">To</TableCell>
+                  <TableCell>Account ID.</TableCell>
+                  <TableCell>Account No.</TableCell>
+                  <TableCell align="right">Owner</TableCell>
                   <TableCell align="right">Type</TableCell>
                   <TableCell align="right">Ammount</TableCell>
                   <TableCell align="center">View</TableCell>
@@ -57,26 +61,26 @@ const Transactions = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers &&
-                  customers.map((customer: any, idx: number) => (
+                {accounts &&
+                  accounts.map((account: IAccount, idx: number) => (
                     <TableRow key={idx}>
-                      {/* {JSON.stringify(customer)} */}
+                      {/* {JSON.stringify(account)} */}
                       <TableCell component="th" scope="row">
-                        {customer.id}
+                        {account.id.substring(0, 9)}
                       </TableCell>
-                      <TableCell align="right">{customer.email}</TableCell>
-                      <TableCell align="right">{customer.first_name}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_number}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_type}</TableCell>
+                      <TableCell align="right">{account.account_number}</TableCell>
+                      <TableCell align="right">{'unknown'}</TableCell>
+                      <TableCell align="right">{account.account_type}</TableCell>
+                      <TableCell align="right">{account.account_balance}</TableCell>
                       <TableCell>
-                        <Button variant="outlined" component={Link} to={`/admin/customers/${customer.id}`} size="small" color="primary">
+                        <Button variant="outlined" component={Link} to={`/admin/accounts/${account.id}`} size="small" color="primary">
                           View
                         </Button>
                       </TableCell>
                       <TableCell align="right">
                         <Button
                           component={Link}
-                          to={`/admin/customers/update/${customer.id}`}
+                          to={`/admin/accounts/update/${account.id}`}
                           size="small"
                           variant="outlined"
                           color="success"
@@ -87,7 +91,13 @@ const Transactions = () => {
                       <TableCell align="right">
                         <Button
                           onClick={() => {
-                            console.log("clicked")
+                            AccountService.deleteAccounts(account.id)
+                              .then((res) => {
+                                if (res.status === 200) {
+                                  notify("Account Deleted.");
+                                  setAccounts(accounts.filter((a) => a.id !== account.id));
+                                }
+                              })
                           }}
                           variant="outlined"
                           color="error"
@@ -107,4 +117,4 @@ const Transactions = () => {
   )
 }
 
-export default Transactions;
+export default Accounts;

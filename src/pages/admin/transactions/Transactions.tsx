@@ -12,19 +12,19 @@ import {
   // Stack,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import PageLayout from '../../layout/PageLayout';
+import PageLayout from '../../../layout/PageLayout';
 import { useEffect } from 'react';
-import ApiService from '../../services/ApiService';
-import { setCustomers } from '../../store/customerSlice';
+import ApiService from '../../../services/ApiService';
+import { setCustomers } from '../../../store/customerSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
-const Users = () => {
+const Transactions = () => {
   const { customers } = useSelector((state: any) => state.store);
   const dispatch = useDispatch();
   useEffect(() => {
     ApiService.getCustomers()
       .then((results) => {
-        console.log("customers", results.data);
+        // console.log("customers", results.data);
         dispatch(setCustomers(results.data));
       }).catch((err) => {
         console.log("customers", err);
@@ -46,11 +46,11 @@ const Users = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Customer ID:</TableCell>
-                  <TableCell align="center">Email</TableCell>
-                  <TableCell align="right">Name</TableCell>
-                  <TableCell align="right">Account No.</TableCell>
-                  <TableCell align="right">Account Type</TableCell>
+                  <TableCell>Transaction ID:</TableCell>
+                  <TableCell align="center">From</TableCell>
+                  <TableCell align="right">To</TableCell>
+                  <TableCell align="right">Type</TableCell>
+                  <TableCell align="right">Ammount</TableCell>
                   <TableCell align="center">View</TableCell>
                   <TableCell align="center">Update</TableCell>
                   <TableCell align="center">Delete</TableCell>
@@ -66,8 +66,8 @@ const Users = () => {
                       </TableCell>
                       <TableCell align="right">{customer.email}</TableCell>
                       <TableCell align="right">{customer.first_name}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_number}</TableCell>
-                      <TableCell align="right">{customer.Accounts[0].account_type}</TableCell>
+                      <TableCell align="right">{customer.account.account_number}</TableCell>
+                      <TableCell align="right">{customer.account.account_type}</TableCell>
                       <TableCell>
                         <Button variant="outlined" component={Link} to={`/admin/customers/${customer.id}`} size="small" color="primary">
                           View
@@ -107,4 +107,4 @@ const Users = () => {
   )
 }
 
-export default Users;
+export default Transactions;

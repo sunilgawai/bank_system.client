@@ -25,16 +25,16 @@ const navigation_links = [
         to: "/customer/account"
     },
     {
-        text: "Change Details",
-        to: "/customer/update"
+        text: "Account Statements",
+        to: "/customer/account"
     },
+    // {
+    //     text: "Change Details",
+    //     to: "/customer/update"
+    // },
     {
         text: "Transaction History",
         to: "/customer/transactions"
-    },
-    {
-        text: "Account Statements",
-        to: "/customer/account"
     },
     {
         text: "Send/Recieve Money",
@@ -82,17 +82,6 @@ const CustomerSidebar = () => {
                             </ListItem>
                         ))
                     }
-                    {['Profile', 'Account', 'Transactions', 'Statements'].map((text, index) => (
-                        <ListItem key={text} button component={Link} to="/customer/profile" disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                            {/* <Link href="something" /> */}
-                        </ListItem>
-                    ))}
                 </List>
                 {/* <Divider /> */}
                 {/* <List>
