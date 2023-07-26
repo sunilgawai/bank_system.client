@@ -44,12 +44,13 @@ const AccountTransactions = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Transaction ID:</TableCell>
-                  <TableCell align="center">Time</TableCell>
-                  <TableCell align="right">Type</TableCell>
-                  <TableCell align="right">Ammount</TableCell>
-                  <TableCell align="center">View</TableCell>
+                  <TableCell align="left">Date</TableCell>
+                  <TableCell align="left">Time</TableCell>
+                  <TableCell align="left">Type</TableCell>
+                  <TableCell align="left">Ammount</TableCell>
+                  {/* <TableCell align="center">View</TableCell>
                   <TableCell align="center">Update</TableCell>
-                  <TableCell align="center">Delete</TableCell>
+                  <TableCell align="center">Delete</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -58,13 +59,14 @@ const AccountTransactions = () => {
                     <TableRow key={idx}>
                       {/* {JSON.stringify(transaction)} */}
                       <TableCell component="th" scope="row">
-                        {transaction.id}
+                        {transaction.id.substring(0, 8)}
                       </TableCell>
-                      <TableCell align="right">{transaction.createdAt}</TableCell>
-                      <TableCell align="right">{transaction.transaction_type}</TableCell>
-                      <TableCell align="right">{transaction.transaction_amount}</TableCell>
+                      <TableCell align="left">{new Date(transaction.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell align="left">{new Date(transaction.createdAt).toLocaleTimeString()}</TableCell>
+                      <TableCell align="left">{transaction.transaction_type}</TableCell>
+                      <TableCell align="left">{transaction.transaction_amount}</TableCell>
                       {/* <TableCell align="right">{transaction.account.account_type}</TableCell> */}
-                      <TableCell>
+                      {/* <TableCell>
                         <Button variant="outlined" component={Link} to={`/admin/customers/${transaction.id}`} size="small" color="primary">
                           View
                         </Button>
@@ -91,7 +93,7 @@ const AccountTransactions = () => {
                         >
                           Delete
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
               </TableBody>
