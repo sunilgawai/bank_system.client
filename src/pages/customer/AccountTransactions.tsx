@@ -13,20 +13,16 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../layout/PageLayout';
-import { useEffect } from 'react';
-import ApiService from '../../services/ApiService';
-import { setCustomers } from '../../store/customerSlice';
-// import { useSelector, useDispatch } from 'react-redux';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useEffect, useState } from 'react';
+import AccountService from '../../services/AccountService';
 
 const AccountTransactions = () => {
-  const { customers } = useAppSelector((state) => state.store);
-  const dispatch = useAppDispatch();
+  const [transactions, setTransactions] = useState([]);
   useEffect(() => {
-    ApiService.getCustomers()
+    AccountService.getMyTransactions()
       .then((results) => {
         // console.log("customers", results.data);
-        dispatch(setCustomers(results.data));
+        setTransactions(results.data);
       }).catch((err) => {
         console.log("customers", err);
       })
@@ -48,8 +44,7 @@ const AccountTransactions = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Transaction ID:</TableCell>
-                  <TableCell align="center">From</TableCell>
-                  <TableCell align="right">To</TableCell>
+                  <TableCell align="center">Time</TableCell>
                   <TableCell align="right">Type</TableCell>
                   <TableCell align="right">Ammount</TableCell>
                   <TableCell align="center">View</TableCell>
@@ -58,26 +53,26 @@ const AccountTransactions = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers &&
-                  customers.map((customer: any, idx: number) => (
+                {transactions &&
+                  transactions.map((transaction: any, idx: number) => (
                     <TableRow key={idx}>
-                      {/* {JSON.stringify(customer)} */}
+                      {/* {JSON.stringify(transaction)} */}
                       <TableCell component="th" scope="row">
-                        {customer.id}
+                        {transaction.id}
                       </TableCell>
-                      <TableCell align="right">{customer.email}</TableCell>
-                      <TableCell align="right">{customer.first_name}</TableCell>
-                      <TableCell align="right">{customer.account.account_number}</TableCell>
-                      <TableCell align="right">{customer.account.account_type}</TableCell>
+                      <TableCell align="right">{transaction.createdAt}</TableCell>
+                      <TableCell align="right">{transaction.transaction_type}</TableCell>
+                      <TableCell align="right">{transaction.transaction_amount}</TableCell>
+                      {/* <TableCell align="right">{transaction.account.account_type}</TableCell> */}
                       <TableCell>
-                        <Button variant="outlined" component={Link} to={`/admin/customers/${customer.id}`} size="small" color="primary">
+                        <Button variant="outlined" component={Link} to={`/admin/customers/${transaction.id}`} size="small" color="primary">
                           View
                         </Button>
                       </TableCell>
                       <TableCell align="right">
                         <Button
                           component={Link}
-                          to={`/admin/customers/update/${customer.id}`}
+                          to={`/admin/customers/update/${transaction.id}`}
                           size="small"
                           variant="outlined"
                           color="success"

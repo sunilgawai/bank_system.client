@@ -28,7 +28,7 @@ const Login = () => {
     // Auth
     const dispatch = useAppDispatch();
 
-    const [form, setForm] = useState({ email: 'sunilgawai@gmail.com', password: 'iNRoBf' });
+    const [form, setForm] = useState({ email: 'sunilgawai@gmail.com', password: 'Sunil@123' });
     const handleVerifyAndLogin = () => {
         ApiService.verifyOtp({ ...form, otp })
             .then((response) => {

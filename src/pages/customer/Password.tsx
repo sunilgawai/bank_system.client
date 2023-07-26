@@ -13,17 +13,6 @@ import ApiService from '../../services/ApiService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const location: {
-  countries: any[];
-  states: any[];
-  cities: any[];
-} = {
-  countries: [],
-  states: [],
-  cities: []
-}
-
 const Password = () => {
   const notify = (message: string) => toast(message);
 
@@ -35,7 +24,8 @@ const Password = () => {
         <Formik
           initialValues={{
             old_password: '',
-            new_password: ''
+            new_password: '',
+            submit: null
           }}
           validationSchema={Yup.object().shape({
             old_password: Yup.string().max(255).required('Old password is required'),
@@ -44,11 +34,12 @@ const Password = () => {
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             setStatus({ success: true });
             console.log("values", values)
-            ApiService.storeCustomer(values)
+            const { old_password, new_password } = values;
+            ApiService.resetPassword({ old_password, new_password })
               .then((response) => {
                 // console.log("res", response);
                 if (response.status === 200) {
-                  notify("Customer stored.");
+                  notify("Password changed.");
                   setSubmitting(false);
                   setStatus({ success: true });
                 }
@@ -57,7 +48,7 @@ const Password = () => {
               }).catch((err) => {
                 // console.log(err);
                 setStatus({ success: false });
-                notify("error storing customer.");
+                notify("error reseting password.");
                 setErrors({ submit: err.response.data.message });
                 setSubmitting(false);
               })

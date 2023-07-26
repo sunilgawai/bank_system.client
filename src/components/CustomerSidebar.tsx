@@ -13,6 +13,14 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
+import ApiService from '../services/ApiService';
+// Notification import.
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import { useAppDispatch } from '../store/hooks';
+import { removeAuth } from '../store/authSlice';
+import { useNavigate } from 'react-router-dom';
+
 const drawerWidth = 240;
 
 const navigation_links = [
@@ -44,13 +52,16 @@ const navigation_links = [
         text: "Change Password.",
         to: "/customer/password"
     },
-    {
-        text: "Logout",
-        to: "/"
-    }
+    // {
+    //     text: "Logout",
+    //     to: "/"
+    // }
 ]
 
 const CustomerSidebar = () => {
+    const notify = (message: string) => toast(message);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -59,6 +70,7 @@ const CustomerSidebar = () => {
                 sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
             >
             </AppBar>
+            <ToastContainer />
             <Drawer
                 sx={{
                     width: drawerWidth,
@@ -90,6 +102,26 @@ const CustomerSidebar = () => {
                             </ListItem>
                         ))
                     }
+                    <ListItem button disablePadding>
+                        <ListItemButton onClick={() => {
+                            ApiService.logout()
+                                .then((res) => {
+                                    console.log(res);
+                                    if (res.status === 200) {
+                                        notify('Logged out successfully');
+                                        dispatch(removeAuth());
+                                        navigate('/login');
+                                    }
+                                }).catch((err) => {
+                                    console.log(err);
+                                })
+                        }}>
+                            <ListItemIcon>
+                                <InboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Logout'} />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
                 {/* <Divider /> */}
                 {/* <List>

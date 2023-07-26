@@ -103,5 +103,18 @@ class AccountService {
         });
     });
   };
+
+  static getMyTransactions = (): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .get("/api/me/account/transactions")
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 }
 export default AccountService;

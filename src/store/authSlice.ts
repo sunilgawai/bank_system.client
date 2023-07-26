@@ -1,4 +1,4 @@
-import { Slice, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { IAuth, ICustomer } from "../types";
 
 const data = localStorage.getItem("auth");
@@ -30,7 +30,9 @@ const userSlice = createSlice({
     removeAuth: (state) => {
       localStorage.removeItem("auth");
       state = {
-        ...state,
+        customer: null,
+        role: "",
+        access_token: "",
         isAuthenticated: false,
       };
       return state;

@@ -68,20 +68,34 @@ class ApiService {
     });
   };
 
-  // static logout = ({ refreshToken }: {}) => {
-  //     return new Promise((resolve, reject) => {
-  //         this.apiServer
-  //             .post('/api/auth/logout', {
-  //                 refreshToken
-  //             })
-  //             .then((response) => {
-  //                 return resolve(response);
-  //             })
-  //             .catch((error) => {
-  //                 return reject(error);
-  //             });
-  //     });
-  // };
+  static resetPassword = (body: {
+    old_password: string;
+    new_password: string;
+  }): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post("/api/auth/reset-password", body)
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
+  static logout = (): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post("/api/auth/logout")
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 
   static getCountries = (): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {

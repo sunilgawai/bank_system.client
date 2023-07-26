@@ -12,21 +12,18 @@ import {
   // Stack,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import PageLayout from '../../../layout/PageLayout';
 import { useEffect } from 'react';
-import ApiService from '../../../services/ApiService';
-import { setCustomers } from '../../../store/customerSlice';
-// import { useSelector, useDispatch } from 'react-redux';
-import { useAppSelector,useAppDispatch } from '../../../store/hooks';
+import AccountService from '../../../services/AccountService';
 
 const Transactions = () => {
-  const {customers } = useAppSelector((state) => state.store);
-  const dispatch = useAppDispatch();
+  const [transactions, setTransactions] = useState([]);
   useEffect(() => {
-    ApiService.getCustomers()
+    AccountService.getMyTransactions()
       .then((results) => {
-        // console.log("customers", results.data);
-        dispatch(setCustomers(results.data));
+        console.log("customers", results.data);
+        setTransactions(results.data);
       }).catch((err) => {
         console.log("customers", err);
       })
@@ -58,8 +55,8 @@ const Transactions = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers &&
-                  customers.map((customer: any, idx: number) => (
+                {transactions &&
+                  transactions.map((customer: any, idx: number) => (
                     <TableRow key={idx}>
                       {/* {JSON.stringify(customer)} */}
                       <TableCell component="th" scope="row">

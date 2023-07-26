@@ -18,17 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AccountService from '../../services/AccountService';
 import { useEffect, useState } from 'react';
 import { ICustomer } from '../../types';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const location: {
-  countries: any[];
-  states: any[];
-  cities: any[];
-} = {
-  countries: [],
-  states: [],
-  cities: []
-}
+import axios from 'axios';
 
 const DepositeWithdraw = () => {
   const notify = (message: string) => toast(message);
@@ -39,9 +29,9 @@ const DepositeWithdraw = () => {
       if (res.status === 200) {
         setCustomer(res.data);
       }
-      console.log(res)
+      // console.log(res)
     }).catch((err) => {
-      console.log('err', err);
+      // console.log('err', err);
     })
   }, [customer?.account?.account_balance])
   if (Object.keys(customer).length === 0) {
@@ -64,14 +54,13 @@ const DepositeWithdraw = () => {
             amount: Yup.string().required('Amount is required'),
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
+            console.log(values);
             setStatus({ success: false });
             setSubmitting(true);
-            // console.log("values", values);
             if (values.action_type === "WITHDRAW") {
               AccountService.withdrawMoney(values.amount)
                 .then((res) => {
                   resetForm();
-                  // revalidator.revalidate();
                   setCustomer({
                     ...customer,
                     account: {
@@ -84,31 +73,40 @@ const DepositeWithdraw = () => {
                   setStatus({ success: true });
                 }).catch((err) => {
                   setStatus({ success: false });
-                  console.log('err', err);
+                  setErrors({ submit: err.response.data.message })
+                  // console.log('err', err);
                 })
             }
 
             if (values.action_type === "DEPOSITE") {
-              AccountService.depositeMoney(values.amount)
-                .then((res) => {
+              console.log("in deposite")
+              try {
+                const response = await axios.post('http://localhost:4000/api/me/account/deposite', {
+                  amount: values.amount
+                }, {
+                  withCredentials: true
+                })
+                console.log("response", response);
+                if (response.status === 200) {
                   resetForm();
-                  // revalidator.revalidate();
                   setCustomer({
                     ...customer,
                     account: {
                       ...customer.account,
-                      account_balance: res.data.account.account_balance
+                      account_balance: response.data.account.account_balance
                     }
                   });
-                  notify(`${values.amount}rs withdrawal Successful.`);
-                  // console.log('res', res);
+                  console.log("res", response);
+                  notify(`${values.amount} rs deposited Successful.`);
                   setStatus({ success: true });
-                }).catch((err) => {
-                  setStatus({ success: false });
-                  console.log('err', err);
-                })
+                }
+              } catch (error: any) {
+                console.log(error);
+                setStatus({ success: false });
+                setErrors({ submit: error.response?.data?.message || 'Deposition failed.' });
+              }
             }
-            }
+          }
           }
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
