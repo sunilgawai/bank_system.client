@@ -11,14 +11,18 @@ import { OutlinedInput } from "@mui/material";
 import axios from "axios";
 
 // App imports.
-import { login } from "../store/authSlice";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { login } from "../store/authSlice";
+// import { useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom";
 import ApiService from "../services/ApiService";
+// import { useAuthContext } from "../context/AuthContext";
+import { setAuth } from "../store/authSlice";
+import { useDispatch } from "react-redux";
+
 
 const Login = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    // const { setAuth } = useAuthContext();
     const [otp, setOtp] = useState("");
     const [ph, setPh] = useState("");
     const [loading, setLoading] = useState(false);
@@ -27,17 +31,16 @@ const Login = () => {
 
     const [form, setForm] = useState({ email: '', password: '' });
     const handleLogin = async () => {
-        const response = await ApiService.getOtp(form);
-        if (response.status === 200) {
-            setShowOTP(true);
-            // Handle Login.
-            // dispatch(login(response.data));
-            // navigate('/customer');
-        }
-        // Error Sending OTP.
+        console.log('login')
+        const response = await axios.post('http://localhost:4000/api/auth/login', form);
+        if(response.status === 200) {
+            console.log("res", response);
+            dispatch(setAuth(response.data));
+        } 
     }
     const handleSendOtp = async () => {
         try {
+            handleLogin();
             const response = await ApiService.getOtp(form);
             console.log(response);
             if (response.status === 200) {

@@ -5,7 +5,7 @@ import { Button, Divider, Grid, InputLabel, OutlinedInput, Stack } from '@mui/ma
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import PageLayout from '../../layout/PageLayout';
-
+import { useAppSelector } from '../../store/hooks';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const location: {
     countries: any[];
@@ -18,19 +18,25 @@ const location: {
 }
 
 const Customer = () => {
+    const { customer } = useAppSelector((state) => state.auth);
+    console.log('c', customer);
 
+    if (!customer) {
+        return <div>Loading...</div>
+    }
     return (
         <>
             <PageLayout>
                 <Divider sx={{ mb: 4 }} />
+                {/* {JSON.stringify(auth)} */}
                 <Formik
-                    initialValues={{}}
+                    initialValues={customer}
                     validationSchema={Yup.object().shape({
                         customer: Yup.string().max(255).required('Customer is required'),
                     })}
                     onSubmit={async (formik) => { }}
                 >
-                    {({ errors, handleBlur, handleChange, touched }) => (
+                    {({ errors, values, handleBlur, handleChange, touched }) => (
                         <form onSubmit={e => e.preventDefault()}>
                             <Grid container spacing={2} px={12}>
                                 <Grid item xs={12} md={6}>
@@ -39,7 +45,7 @@ const Customer = () => {
                                         <OutlinedInput
                                             id="document_number"
                                             type="document_number"
-                                            value={'First Name'}
+                                            value={values.first_name}
                                             name="document_number"
                                             onBlur={handleBlur}
                                             placeholder="John"
@@ -53,7 +59,7 @@ const Customer = () => {
                                         <OutlinedInput
                                             id="middle_name"
                                             type="middle_name"
-                                            value={'Middle Name'}
+                                            value={values.middle_name}
                                             name="middle_name"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -68,7 +74,7 @@ const Customer = () => {
                                             fullWidth
                                             id="last_name-signup"
                                             type="last_name"
-                                            value={'Last Name'}
+                                            value={values.last_name}
                                             name="last_name"
                                             onBlur={handleBlur}
                                             placeholder="Doe"
@@ -83,7 +89,7 @@ const Customer = () => {
                                         <OutlinedInput
                                             fullWidth
                                             id="phone-signup"
-                                            value={'Phone No.'}
+                                            value={values.phone}
                                             name="phone"
                                             onBlur={handleBlur}
                                             placeholder="Phone No."
@@ -98,7 +104,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Email'}
+                                            value={values.email}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -114,8 +120,8 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'30/09/2001'}
-                                            name="email"
+                                            value={values.date_of_birth}
+                                            name="date_of_birth"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
                                             readOnly={true}
@@ -130,7 +136,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Gender'}
+                                            value={values.gender}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -146,7 +152,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Document Type'}
+                                            value={values.document.document_type}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -161,7 +167,7 @@ const Customer = () => {
                                         <OutlinedInput
                                             id="document_number"
                                             type="document_number"
-                                            value={'Document No.'}
+                                            value={values.document.document_number}
                                             name="document_number"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -177,7 +183,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'India'}
+                                            value={values.address.country}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -193,7 +199,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Maharashtra'}
+                                            value={values.address.state}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -209,7 +215,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'City'}
+                                            value={values.address.city}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -225,7 +231,7 @@ const Customer = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'District'}
+                                            value={values.address.district}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -240,7 +246,7 @@ const Customer = () => {
                                         <OutlinedInput
                                             fullWidth
                                             id="landmark"
-                                            value={'Landmark'}
+                                            value={values.address.landmark}
                                             name="landmark"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -248,8 +254,8 @@ const Customer = () => {
                                             inputProps={{}}
                                         />
                                     </Stack>
-                                </Grid> 
-                                <Grid item xs={12}>
+                                </Grid>
+                                {/* <Grid item xs={12}>
                                     <Button
                                         disableElevation
                                         fullWidth
@@ -258,11 +264,9 @@ const Customer = () => {
                                         variant="contained"
                                         color="primary"
                                     >
-                                        {/* <Link to="admin/update/78645"> */}
                                         Update Details.
-                                        {/* </Link> */}
                                     </Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </form>
                     )}

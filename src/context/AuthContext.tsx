@@ -11,20 +11,26 @@ interface AuthContextProps {
     setAuth: React.Dispatch<React.SetStateAction<Auth>>
 }
 
-const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
+const AuthContext = createContext<any>({});
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-    const [auth, setAuth] = useState({
-        user: { role: 'admin' },
-        isAuth: true
-    });
+    const [auth, setAuth] = useState({} as Auth);
 
-    useEffect(() => {
-        // check if there is user.
-        // const auth = window.localStorage.getItem('auth')
-        //     ? JSON.parse(window.localStorage.getItem('auth'))
-        //     : { user: { role: 'customer' } }
-    })
+    // useEffect(()=> {
+    //     const data = localStorage.getItem('auth')
+    //     if(data) {
+    //         const _auth = JSON.parse(data);
+    //         setAuth(_auth)
+    //         // console.log('setAuth', _auth);
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     const _auth = JSON.stringify(auth);
+    //     if(Object.keys(auth).length === 0) return;
+    //     localStorage.setItem('auth', _auth);
+    //     // console.log('setting auth init', auth);
+    // }, [auth])
 
     return <AuthContext.Provider value={{
         auth,

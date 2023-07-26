@@ -1,17 +1,25 @@
 import { useNavigate, useOutlet } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Box } from '@mui/material';
 import AdminSidebar from '../components/AdminSidebar';
-import { useAuthContext } from '../context/AuthContext';
-
+import { useAppSelector } from '../store/hooks';
 const AdminLayout = () => {
-    const { auth } = useAuthContext();
     const navigate = useNavigate();
-    if (!auth.isAuth) {
-        navigate('/customer');
-    }
+    const { role, isAuthenticated, access_token } = useAppSelector((state) => state.auth)
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+        if (isAuthenticated && role === 'customer') {
+            navigate('/customer');
+        }
+    }, [isAuthenticated, role, navigate])
+
     return (
         <Box sx={{ display: 'flex' }}>
             <AdminSidebar />
+            {JSON.stringify(access_token)}
             {/* CustomerLayout */}
             <Box
                 component="main"

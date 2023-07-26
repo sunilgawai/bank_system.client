@@ -1,22 +1,42 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { Slice, createSlice } from "@reduxjs/toolkit";
+import { IAuth, ICustomer } from "../types";
 
-const authSlice = createSlice({
+const data = localStorage.getItem("auth");
+let auth;
+if (data) {
+  auth = JSON.parse(data);
+}
+const initialState: IAuth = {
+  customer: auth.customer as ICustomer,
+  access_token: auth.access_token,
+  role: auth.role,
+  isAuthenticated: auth ? true : false,
+};
+
+const userSlice = createSlice({
   name: "auth",
-  initialState: {
-    isAuth: false,
-    user: {},
-  },
+  initialState,
   reducers: {
-    login(state, action) {
-      state.user = action.payload;
-      state.isAuth = true;
+    setAuth: (state, action) => {
+      const data = action.payload;
+      console.log("data", data);
+      localStorage.setItem("auth", JSON.stringify(data));
+      state = {
+        isAuthenticated: true,
+        ...data,
+      };
+      return state;
     },
-    logout(state) {
-      state.user = {};
-      state.isAuth = false;
+    removeAuth: (state) => {
+      localStorage.removeItem("auth");
+      state = {
+        ...state,
+        isAuthenticated: false,
+      };
+      return state;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
-export default authSlice.reducer;
+export const { setAuth, removeAuth } = userSlice.actions;
+export default userSlice.reducer;
