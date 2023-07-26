@@ -26,19 +26,19 @@ const navigation_links = [
     },
     {
         text: "Account Statements",
-        to: "/customer/account"
+        to: "/customer/statements"
     },
-    // {
-    //     text: "Change Details",
-    //     to: "/customer/update"
-    // },
     {
         text: "Transaction History",
         to: "/customer/transactions"
     },
     {
+        text: "Deposite/Withdraw Money",
+        to: "/customer/deposite/withdraw"
+    },
+    {
         text: "Send/Recieve Money",
-        to: "/customer/account"
+        to: "/customer/send/recieve"
     }
 ]
 

@@ -64,5 +64,31 @@ class AccountService {
         });
     });
   };
+
+  static withdrawMoney = (amount: string): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post("/api/me/account/withdraw", { amount })
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
+  static depositeMoney = (amount: string): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post("/api/me/account/deposite", { amount })
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 }
 export default AccountService;

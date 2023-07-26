@@ -7,7 +7,7 @@ import Admin from "../pages/admin/Admin";
 import About from "../pages/About";
 import Update from "../pages/admin/users/Update";
 import Transactions from "../pages/admin/transactions/Transactions";
-import Statements from "../pages/Statements";
+import Statements from "../pages/customer/Statements";
 import Users from "../pages/admin/users/Users";
 import Create from "../pages/admin/users/Create";
 import Login from "../pages/Login";
@@ -16,6 +16,9 @@ import Accounts from "../pages/admin/accounts/Accounts";
 import AccountView from "../pages/customer/AccountView";
 import ProfileView from "../pages/customer/ProfileView";
 import AccountUpdate from "../pages/admin/accounts/AccountUpdate";
+import AccountTransactions from "../pages/customer/AccountTransactions";
+import SendRecieve from "../pages/customer/SendRecieve";
+import DepositeWithdraw from "../pages/customer/DepositeWithdraw";
 
 export const router = createBrowserRouter([
     {
@@ -39,24 +42,28 @@ export const router = createBrowserRouter([
                 element: <Customer />
             },
             {
-                path: 'profile',
-                element: <ProfileView />
-            },
-            {
                 path: 'account',
                 element: <AccountView />
             },
             {
-                path: 'update',
-                element: <Update />
+                path: 'statements',
+                element: <Statements />
             },
             {
                 path: 'transactions',
-                element: <Transactions />
+                element: <AccountTransactions />
             },
             {
-                path: 'statements',
-                element: <Statements />
+                path: 'deposite/withdraw',
+                element: <DepositeWithdraw />
+            },
+            {
+                path: 'send/recieve',
+                element: <SendRecieve />
+            }   ,
+            {
+                path: 'profile',
+                element: <ProfileView />
             }
         ]
     },

@@ -12,15 +12,15 @@ import {
   // Stack,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import PageLayout from '../../../layout/PageLayout';
+import PageLayout from '../../layout/PageLayout';
 import { useEffect } from 'react';
-import ApiService from '../../../services/ApiService';
-import { setCustomers } from '../../../store/customerSlice';
+import ApiService from '../../services/ApiService';
+import { setCustomers } from '../../store/customerSlice';
 // import { useSelector, useDispatch } from 'react-redux';
-import { useAppSelector,useAppDispatch } from '../../../store/hooks';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 
-const Transactions = () => {
-  const {customers } = useAppSelector((state) => state.store);
+const AccountTransactions = () => {
+  const { customers } = useAppSelector((state) => state.store);
   const dispatch = useAppDispatch();
   useEffect(() => {
     ApiService.getCustomers()
@@ -42,7 +42,7 @@ const Transactions = () => {
             minHeight: '100vh',
             padding: theme.spacing(4)
           })}
-        >
+        > Account Transactions
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
@@ -108,4 +108,4 @@ const Transactions = () => {
   )
 }
 
-export default Transactions;
+export default AccountTransactions;
