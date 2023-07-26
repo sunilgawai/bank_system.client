@@ -10,54 +10,58 @@ import { toast, Toaster } from "react-hot-toast";
 import { OutlinedInput } from "@mui/material";
 import axios from "axios";
 
-// App imports.
-// import { login } from "../store/authSlice";
-// import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
 import ApiService from "../services/ApiService";
-// import { useAuthContext } from "../context/AuthContext";
 import { setAuth } from "../store/authSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-    const dispatch = useDispatch();
-    // const { setAuth } = useAuthContext();
+    const navigate = useNavigate();
     const [otp, setOtp] = useState("");
     const [ph, setPh] = useState("");
+    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [showOTP, setShowOTP] = useState(false);
     const [optScreen, setOtpScreen] = useState(false);
 
-    const [form, setForm] = useState({ email: '', password: '' });
-    const handleLogin = async () => {
-        console.log('login')
-        const response = await axios.post('http://localhost:4000/api/auth/login', form);
-        if(response.status === 200) {
-            console.log("res", response);
-            dispatch(setAuth(response.data));
-        } 
+    // Auth
+    const dispatch = useAppDispatch();
+
+    const [form, setForm] = useState({ email: 'sunilgawai@gmail.com', password: 'iNRoBf' });
+    const handleVerifyAndLogin = () => {
+        ApiService.verifyOtp({ ...form, otp })
+            .then((response) => {
+                if (response.status === 200) {
+                    setShowOTP(true);
+                    dispatch(setAuth(response.data));
+                    if (response.data.role === 'customer') {
+                        navigate('/customer');
+                    } else {
+                        navigate('/admin');
+                    }
+                }
+                setLoading(false)
+            }).catch((error) => {
+                setLoading(false)
+                setError(error.response.message);
+                setTimeout(() => setError(''), 2000);
+                console.log('error', error);
+            })
     }
+
     const handleSendOtp = async () => {
-        try {
-            handleLogin();
-            const response = await ApiService.getOtp(form);
-            console.log(response);
-            if (response.status === 200) {
-                // setShowOTP(true);
-                // Handle Login.
-                // if(response.data.user.role === 'admin') {
-                //     dispatch(login(response.data));
-                //     navigate('/admin');
-                //     return;
-                // }
-                // dispatch(login(response.data));
-                // navigate('/customer');
-            }
-            // Error Sending OTP.
-        } catch (error) {
-            console.log(error);
-        }
+        setLoading(true)
+        ApiService.getOtp(form)
+            .then((response) => {
+                if (response.status === 200) {
+                    setShowOTP(true);
+                }
+                setLoading(false)
+            }).catch((error) => {
+                setLoading(false)
+                console.log('error', error);
+            })
     }
 
     return (
@@ -95,13 +99,13 @@ const Login = () => {
                                     className="opt-container "
                                 ></OtpInput>
                                 <button
-                                    // onClick={onOTPVerify}
+                                    onClick={handleVerifyAndLogin}
                                     className="bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded"
                                 >
                                     {loading && (
                                         <CgSpinner size={20} className="mt-1 animate-spin" />
                                     )}
-                                    <span>Verify OTP</span>
+                                    <span>{error ? 'error' : 'Verify OTP'}</span>
                                 </button>
                             </>
                         ) : (

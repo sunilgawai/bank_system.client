@@ -65,6 +65,19 @@ class AccountService {
     });
   };
 
+  static getMyProfile = (): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .get(`/api/me`)
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
   static withdrawMoney = (amount: string): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer

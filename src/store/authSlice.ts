@@ -7,9 +7,9 @@ if (data) {
   auth = JSON.parse(data);
 }
 const initialState: IAuth = {
-  customer: auth.customer as ICustomer,
-  access_token: auth.access_token,
-  role: auth.role,
+  customer: auth?.customer as ICustomer,
+  access_token: auth?.access_token,
+  role: auth?.role,
   isAuthenticated: auth ? true : false,
 };
 

@@ -19,6 +19,7 @@ import AccountUpdate from "../pages/admin/accounts/AccountUpdate";
 import AccountTransactions from "../pages/customer/AccountTransactions";
 import SendRecieve from "../pages/customer/SendRecieve";
 import DepositeWithdraw from "../pages/customer/DepositeWithdraw";
+import Password from "../pages/customer/Password";
 
 export const router = createBrowserRouter([
     {
@@ -60,10 +61,14 @@ export const router = createBrowserRouter([
             {
                 path: 'send/recieve',
                 element: <SendRecieve />
-            }   ,
+            },
             {
                 path: 'profile',
                 element: <ProfileView />
+            },
+            {
+                path: 'password',
+                element: <Password />
             }
         ]
     },

@@ -39,6 +39,14 @@ const navigation_links = [
     {
         text: "Send/Recieve Money",
         to: "/customer/send/recieve"
+    },
+    {
+        text: "Change Password.",
+        to: "/customer/password"
+    },
+    {
+        text: "Logout",
+        to: "/"
     }
 ]
 

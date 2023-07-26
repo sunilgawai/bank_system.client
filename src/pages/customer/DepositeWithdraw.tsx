@@ -9,11 +9,15 @@ import { Formik } from 'formik';
 import PageLayout from '../../layout/PageLayout';
 import ApiService from '../../services/ApiService';
 import { useAppSelector } from '../../store/hooks';
+import { useRevalidator } from "react-router-dom";
+
 
 // Notification import.
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AccountService from '../../services/AccountService';
+import { useEffect, useState } from 'react';
+import { ICustomer } from '../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const location: {
@@ -28,10 +32,19 @@ const location: {
 
 const DepositeWithdraw = () => {
   const notify = (message: string) => toast(message);
-  const { customer } = useAppSelector((state) => state.auth);
-  // console.log('c', customer.account);
+  const [customer, setCustomer] = useState({} as ICustomer);
 
-  if (!customer) {
+  useEffect(() => {
+    AccountService.getMyProfile().then((res) => {
+      if (res.status === 200) {
+        setCustomer(res.data);
+      }
+      console.log(res)
+    }).catch((err) => {
+      console.log('err', err);
+    })
+  }, [customer?.account?.account_balance])
+  if (Object.keys(customer).length === 0) {
     return <div>Loading...</div>
   }
 
@@ -53,11 +66,21 @@ const DepositeWithdraw = () => {
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             setStatus({ success: false });
             setSubmitting(true);
-            console.log("values", values);
+            // console.log("values", values);
             if (values.action_type === "WITHDRAW") {
               AccountService.withdrawMoney(values.amount)
                 .then((res) => {
-                  console.log('res', res);
+                  resetForm();
+                  // revalidator.revalidate();
+                  setCustomer({
+                    ...customer,
+                    account: {
+                      ...customer.account,
+                      account_balance: res.data.account.account_balance
+                    }
+                  });
+                  notify(`${values.amount}rs withdrawal Successful.`);
+                  // console.log('res', res);
                   setStatus({ success: true });
                 }).catch((err) => {
                   setStatus({ success: false });
@@ -68,34 +91,25 @@ const DepositeWithdraw = () => {
             if (values.action_type === "DEPOSITE") {
               AccountService.depositeMoney(values.amount)
                 .then((res) => {
-                  console.log('res', res);
+                  resetForm();
+                  // revalidator.revalidate();
+                  setCustomer({
+                    ...customer,
+                    account: {
+                      ...customer.account,
+                      account_balance: res.data.account.account_balance
+                    }
+                  });
+                  notify(`${values.amount}rs withdrawal Successful.`);
+                  // console.log('res', res);
                   setStatus({ success: true });
                 }).catch((err) => {
                   setStatus({ success: false });
-                  setErrors({ submit: err.response.data.message });
                   console.log('err', err);
                 })
             }
-            setSubmitting(false);
-            // ApiService.storeCustomer(values)
-            //   .then((response) => {
-            //     // console.log("res", response);
-            //     if (response.status === 200) {
-            //       notify("Customer stored.");
-            //       setSubmitting(false);
-            //       setStatus({ success: true });
-            //     }
-            //     setSubmitting(false);
-            //     resetForm();
-            //   }).catch((err) => {
-            //     // console.log(err);
-            //     setStatus({ success: false });
-            //     notify("error storing customer.");
-            //     setErrors({ submit: err.response.data.message });
-            //     setSubmitting(false);
-            //   })
-
-          }}
+            }
+          }
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
             <form onSubmit={handleSubmit}>
@@ -106,7 +120,7 @@ const DepositeWithdraw = () => {
                     <OutlinedInput
                       id="middle_name"
                       type="middle_name"
-                      value={customer.account.account_type}
+                      value={customer?.account?.account_type}
                       name="middle_name"
                       onBlur={handleBlur}
                       onChange={handleChange}
