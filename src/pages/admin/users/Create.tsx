@@ -218,10 +218,9 @@ const Create = () => {
                         label="Date Of Birth"
                         value={values.date_of_birth}
                         onChange={(newValue) => {
-                          // const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
+                          const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
                           // console.log("DOB", { formattedDate, newValue })
-
-                          setFieldValue('date_of_birth', '30/09/2001'); // Set the selected date using setFieldValue
+                          setFieldValue('date_of_birth', formattedDate); // Set the selected date using setFieldValue
                         }}
                       />
                     </LocalizationProvider>

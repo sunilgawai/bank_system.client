@@ -13,7 +13,10 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Typography from '@mui/material/Typography';
 // import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ApiService from '../services/ApiService';
+import { useAppDispatch } from '../store/hooks';
+import { removeAuth } from '../store/authSlice';
 
 const drawerWidth = 240;
 const navigation_links = [
@@ -37,13 +40,16 @@ const navigation_links = [
         text: "Create Account",
         to: "/admin/create"
     },
-    {
-        text: "Other",
-        to: "/admin/other"
-    }
+    // {
+    //     text: "Other",
+    //     to: "/admin/other"
+    // }
 ]
 
 const AdminSidebar = () => {
+    // const notify = (message: string) => toast(message);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -84,19 +90,26 @@ const AdminSidebar = () => {
                         ))
                     }
                 </List>
-                {/* <Divider /> */}
-                {/* <List>
-                    {['Profile', 'Account', 'Transactions', 'Statements'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List> */}
+                <ListItem button disablePadding>
+                    <ListItemButton onClick={() => {
+                        ApiService.logout()
+                            .then((res) => {
+                                console.log(res);
+                                if (res.status === 200) {
+                                    // notify('Logged out successfully');
+                                    dispatch(removeAuth());
+                                    navigate('/login');
+                                }
+                            }).catch((err) => {
+                                console.log(err);
+                            })
+                    }}>
+                        <ListItemIcon>
+                            <InboxIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={'Logout'} />
+                    </ListItemButton>
+                </ListItem>
             </Drawer>
             <Box
                 component="main"

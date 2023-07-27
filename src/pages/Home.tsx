@@ -4,34 +4,30 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 const Home = () => {
-  const { auth } = useAuthContext();
-  const navigate = useNavigate();
-  if (!auth.isAuth) {
-    navigate('/customer');
-  }
+  // const { auth } = useAuthContext();
+  // const navigate = useNavigate();
+  // if (!auth.isAuth) {
+  //   navigate('/customer');
+  // }
   return (
     <div>
       <Header />
-      <Box width={'100vw'} height={'100vh'} p={4}
-        flex={1} flexDirection={'row'} alignItems={'center'}
-        justifyContent={'center'}>
-        <img style={{
-          width: '50vw',
-          height: '60%'
-        }}
-          src="/bank_img.jpg" alt="bank" />
+      <div className="w-full h-screen flex flex-row items-center justify-around">
+        <div className="w-[50%] h-full flex justify-center align-center flex-col bg-[#64748b]">
+          {/* <div className="border border-black mt-8"> */}
+          <h1 className="text-center text-white leading-normal font-medium text-5xl">
+            Welcome to <br /> The Developers Bank.
+          </h1>
+          {/* </div> */}
+        </div>
 
-        <Typography
-          fontSize={40}
-          fontStyle={'italic'}>
-          Welcome to
-        </Typography>
-        <Typography
-          fontSize={40}
-          fontStyle={'italic'}>
-          The Developer's Bank
-        </Typography>
-      </Box>
+        <div className="w-[50%] flex justify-center align-center flex-col">
+          <div className="w-full mt-12">
+            <img className="w-full h-full mx-4 align-center" src="/bank_img.jpg" alt="bank" />
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }

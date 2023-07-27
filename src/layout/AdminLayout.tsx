@@ -9,18 +9,17 @@ const AdminLayout = () => {
     const { role, isAuthenticated, access_token } = useAppSelector((state) => state.auth)
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login');
-        }
-        if (isAuthenticated && role === 'customer') {
-            navigate('/customer');
-        }
+        // if (!isAuthenticated) {
+        //     navigate('/login');
+        // }
+        // if (isAuthenticated && role === 'customer') {
+        //     navigate('/customer');
+        // }
     }, [isAuthenticated, role, navigate])
 
     return (
         <Box sx={{ display: 'flex' }}>
             <AdminSidebar />
-            {JSON.stringify(access_token)}
             {/* CustomerLayout */}
             <Box
                 component="main"

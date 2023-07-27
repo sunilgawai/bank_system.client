@@ -28,7 +28,7 @@ const Accounts = () => {
     AccountService.getAccounts()
       .then((results) => {
         setAccounts(results.data);
-        // console.log("accounts", results.data);
+        console.log("accounts", results.data);
       }).catch((err) => {
         console.log("accounts", err);
       })
@@ -56,8 +56,8 @@ const Accounts = () => {
                   <TableCell align="right">Type</TableCell>
                   <TableCell align="right">Ammount</TableCell>
                   <TableCell align="center">View</TableCell>
-                  <TableCell align="center">Update</TableCell>
-                  <TableCell align="center">Delete</TableCell>
+                  {/* <TableCell align="center">Update</TableCell>
+                  <TableCell align="center">Delete</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -68,16 +68,16 @@ const Accounts = () => {
                       <TableCell component="th" scope="row">
                         {account.id.substring(0, 9)}
                       </TableCell>
-                      <TableCell align="right">{account.account_number}</TableCell>
-                      <TableCell align="right">{'unknown'}</TableCell>
+                      <TableCell align="center">{account.account_number}</TableCell>
+                      <TableCell align="right">{account.Customer[0]?.first_name}</TableCell>
                       <TableCell align="right">{account.account_type}</TableCell>
                       <TableCell align="right">{account.account_balance}</TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Button variant="outlined" component={Link} to={`/admin/accounts/${account.id}`} size="small" color="primary">
                           View
                         </Button>
                       </TableCell>
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                         <Button
                           component={Link}
                           to={`/admin/accounts/update/${account.id}`}
@@ -105,7 +105,7 @@ const Accounts = () => {
                         >
                           Delete
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
               </TableBody>

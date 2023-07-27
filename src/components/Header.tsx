@@ -21,24 +21,10 @@ const Header = () => {
                 component={Link} to="/login" variant='text' color='primary'>
                 Login
             </Button>
-            <Typography>
+            <Button
+                component={Link} to="/about" variant='text' color='info'>
                 About
-            </Typography>
-            <Link
-                to="/customer"
-            >
-                customer
-            </Link>
-            <Link
-                to="/admin"
-            >
-                admin
-            </Link>
-            <Link
-                to="/login"
-            >
-                customer
-            </Link>
+            </Button>
         </Box>
     )
 }

@@ -44,10 +44,10 @@ const navigation_links = [
         text: "Deposite/Withdraw Money",
         to: "/customer/deposite/withdraw"
     },
-    {
-        text: "Send/Recieve Money",
-        to: "/customer/send/recieve"
-    },
+    // {
+    //     text: "Send/Recieve Money",
+    //     to: "/customer/send/recieve"
+    // },
     {
         text: "Change Password.",
         to: "/customer/password"

@@ -41,7 +41,7 @@ const Update = () => {
   useEffect(() => {
     if (!id) return;
     ApiService.viewCustomer(id).then((response) => {
-      console.log("customer", response.data);
+      // console.log("customer", response.data);
       if (response.status === 200) {
         setCustomer(response.data);
       }
@@ -51,7 +51,7 @@ const Update = () => {
     })
   }, [])
 
-  console.log("customer", customer);
+  // console.log("customer", customer);
   if (Object.keys(customer).length === 0) {
     return <div>Loading</div>
   }
@@ -89,7 +89,7 @@ const Update = () => {
             last_name: Yup.string().max(255).required('Last Name is required'),
             phone: Yup.string().max(12).required('Phone No. is required'),
             email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-            date_of_birth: Yup.string().required('Date of Birth is required'),
+            date_of_birth: Yup.string(),
             gender: Yup.string().max(255).required('Gender is required'),
             document_type: Yup.string().max(255).required('Document type is required'),
             document_number: Yup.string().max(255).required('Document No. is required'),
@@ -235,15 +235,15 @@ const Update = () => {
                 {/* Date Of Birth */}
                 <Grid item xs={12} md={6}>
                   <Stack spacing={1}>
-                    <InputLabel htmlFor="date-of-birth">Date fo Birth*</InputLabel>
+                    <InputLabel htmlFor="date_of_birth">Date fo Birth*</InputLabel>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Date Of Birth"
                         value={values.date_of_birth}
                         onChange={(newValue) => {
-                          // const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
+                          const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
                           // console.log("DOB", { formattedDate, newValue })
-                          setFieldValue('date_of_birth', '30/09/2001'); // Set the selected date using setFieldValue
+                          setFieldValue('date_of_birth', formattedDate); // Set the selected date using setFieldValue
                         }}
                       />
                     </LocalizationProvider>

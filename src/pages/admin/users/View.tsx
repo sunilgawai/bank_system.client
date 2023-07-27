@@ -1,23 +1,31 @@
 /* eslint-disable no-unused-vars */
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 // material-ui
 import { Button, Divider, Grid, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import PageLayout from '../../../layout/PageLayout';
+import { ICustomer } from '../../../types';
+import ApiService from '../../../services/ApiService';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const location: {
-    countries: any[];
-    states: any[];
-    cities: any[];
-} = {
-    countries: [],
-    states: [],
-    cities: []
-}
 
 const View = () => {
+    const { id } = useParams();
+    const [customer, setCustomer] = useState<ICustomer>({} as ICustomer);
+    useEffect(() => {
+        if (!id) return;
+        ApiService.viewCustomer(id).then((response) => {
+            // console.log("customer", response.data);
+            if (response.status === 200) {
+                setCustomer(response.data);
+            }
+        }).catch((err) => {
+            // notify('error loading customer.');
+            console.log("err", err)
+        })
+    }, [])
 
     return (
         <>
@@ -27,7 +35,25 @@ const View = () => {
                 </Button>
                 <Divider sx={{ mb: 4 }} />
                 <Formik
-                    initialValues={{}}
+                    initialValues={{
+                        id: id,
+                        first_name: customer.first_name,
+                        middle_name: customer.middle_name || '',
+                        last_name: customer.last_name || '',
+                        phone: customer.phone || '',
+                        email: customer.email || '',
+                        date_of_birth: customer.date_of_birth || '',
+                        gender: customer.gender || '',
+                        document_type: customer?.document?.document_type || '',
+                        document_number: customer?.document?.document_number || '',
+                        state: customer.address.state || '',
+                        city: customer.address.city || '',
+                        district: customer.address.district || '',
+                        landmark: customer.address.landmark || '',
+                        account_type: customer.account.account_type || '',
+                        account_balance: customer.account.account_balance || '',
+                        submit: ''
+                    }}
                     validationSchema={Yup.object().shape({
                         customer: Yup.string().max(255).required('Customer is required'),
                     })}

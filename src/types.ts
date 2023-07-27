@@ -37,7 +37,7 @@ export interface IAccount {
   document_id:           string;
   createdAt:             string;
   updatedAt:             string;
-  Customer:              { [key: string]: string }[];
+  Customer:              ICustomer[];
   Document:              Document;
   received_transactions: any[];
   sent_transactions:     any[];
