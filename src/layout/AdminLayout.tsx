@@ -6,15 +6,15 @@ import { useAppSelector } from '../store/hooks';
 
 const AdminLayout = () => {
     const navigate = useNavigate();
-    const { role, isAuthenticated, access_token } = useAppSelector((state) => state.auth)
+    const { role, isAuthenticated } = useAppSelector((state) => state.auth)
 
     useEffect(() => {
-        // if (!isAuthenticated) {
-        //     navigate('/login');
-        // }
-        // if (isAuthenticated && role === 'customer') {
-        //     navigate('/customer');
-        // }
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+        if (isAuthenticated && role === 'customer') {
+            navigate('/customer');
+        }
     }, [isAuthenticated, role, navigate])
 
     return (

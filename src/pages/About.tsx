@@ -1,7 +1,8 @@
-
+import Header from "../components/Header";
 const About = () => {
   return (
     <section className="">
+      <Header />
        {/* bg-emerald-500 */}
       <div>
         {/* <div id="recaptcha-container"></div> */}

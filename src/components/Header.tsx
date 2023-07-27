@@ -10,21 +10,23 @@ const Header = () => {
                 backgroundColor: 'lightgray',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '10px'
+                padding: '10px 50px',
             }}>
             <Typography style={{ width: '10%' }}>
                 <AccountBalanceOutlinedIcon fontSize='large' />
             </Typography>
-            <Button
-                component={Link} to="/login" variant='text' color='primary'>
-                Login
-            </Button>
-            <Button
-                component={Link} to="/about" variant='text' color='info'>
-                About
-            </Button>
+            <div>
+                <Button
+                    component={Link} to="/login" variant='text' color='success'>
+                    Login
+                </Button>
+                <Button
+                    component={Link} to="/about" variant='text' color='success'>
+                    About
+                </Button>
+            </div>
         </Box>
     )
 }

@@ -13,7 +13,7 @@ import axios from "axios";
 import ApiService from "../services/ApiService";
 import { setAuth } from "../store/authSlice";
 import { useAppDispatch } from "../store/hooks";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Login = () => {
@@ -24,6 +24,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [showOTP, setShowOTP] = useState(false);
     const [optScreen, setOtpScreen] = useState(false);
+    const [resetPassScreen, setResetPassScreen] = useState(false);
 
     // Auth
     const dispatch = useAppDispatch();
@@ -41,10 +42,13 @@ const Login = () => {
                         navigate('/admin');
                     }
                 }
+                if (response.status === 401) {
+                    setError(response.data.message);
+                }
                 setLoading(false)
             }).catch((error) => {
                 setLoading(false)
-                setError(error.response.message);
+                setError(error.response.data.message);
                 setTimeout(() => setError(''), 2000);
                 console.log('error', error);
             })
@@ -63,6 +67,8 @@ const Login = () => {
                 console.log('error', error);
             })
     }
+
+
 
     return (
         <section className="bg-emerald-500 flex items-center justify-center h-screen">
@@ -105,7 +111,11 @@ const Login = () => {
                                     {loading && (
                                         <CgSpinner size={20} className="mt-1 animate-spin" />
                                     )}
-                                    <span>{error ? 'error' : 'Verify OTP'}</span>
+                                    <span>{error ? error : 'Verify OTP'}</span>
+                                </button>
+                                <button onClick={() => setShowOTP(!showOTP)}
+                                    className="bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded">
+                                    <span>Back to Login</span>
                                 </button>
                             </>
                         ) : (
@@ -119,8 +129,6 @@ const Login = () => {
                                 >
                                     Enter your email and password.
                                 </label>
-                                {/* <PhoneInput country={"in"} value={ph} onChange={setPh} /> */}
-
                                 <OutlinedInput
                                     name='email'
                                     value={form.email}
@@ -137,6 +145,7 @@ const Login = () => {
                                     color="primary"
                                     style={{ textAlign: 'center' }}
                                     onChange={e => setForm({ ...form, password: e.target.value })} />
+                                <Link to="/reset" className="text-white font-md">forgot password</Link>
                                 <button
                                     onClick={handleSendOtp}
                                     className="bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded"
@@ -146,12 +155,19 @@ const Login = () => {
                                     )}
                                     <span>Send code via Email</span>
                                 </button>
+                                <button
+                                    onClick={() => {
+                                        navigate("../")
+                                    }}
+                                    className="bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded">
+                                    <span>Back to Home</span>
+                                </button>
                             </>
                         )}
                     </div>
                 )}
             </div>
-        </section>
+        </section >
     )
 }
 

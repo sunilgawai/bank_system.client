@@ -20,6 +20,7 @@ import AccountTransactions from "../pages/customer/AccountTransactions";
 import SendRecieve from "../pages/customer/SendRecieve";
 import DepositeWithdraw from "../pages/customer/DepositeWithdraw";
 import Password from "../pages/customer/Password";
+import PasswordReset from "../pages/PasswordReset";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
     {
         path: '/login',
         element: <Login />
+    },
+    {
+        path: '/reset',
+        element: <PasswordReset />
     },
     {
         path: '/customer',

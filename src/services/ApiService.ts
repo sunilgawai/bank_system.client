@@ -226,6 +226,43 @@ class ApiService {
         });
     });
   };
+
+  static requestForgetPasswordOtp = (email: string): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post(`/api/auth/forget-password-otp`, {
+          email: email,
+        })
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
+  static confirmForgetPasswordOtp = (
+    email: string,
+    opt: string
+  ): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .post(`/api/auth/forget-password-otp`, {
+          data: {
+            email: email,
+            otp: opt,
+          },
+          withCredentials: true,
+        })
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 }
 
 export default ApiService;
