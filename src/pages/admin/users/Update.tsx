@@ -103,6 +103,7 @@ const Update = () => {
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             try {
               setStatus({ success: true });
+              setSubmitting(true);
               console.log("values", values)
               const results = await ApiService.updateCustomer(values);
               console.log("results", results);
@@ -241,9 +242,8 @@ const Update = () => {
                         label="Date Of Birth"
                         value={values.date_of_birth}
                         onChange={(newValue) => {
-                          const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
-                          // console.log("DOB", { formattedDate, newValue })
-                          setFieldValue('date_of_birth', formattedDate); // Set the selected date using setFieldValue
+                          const date = new Date(newValue!).toLocaleDateString()
+                          setFieldValue('date_of_birth', date);
                         }}
                       />
                     </LocalizationProvider>

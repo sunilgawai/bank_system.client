@@ -110,7 +110,7 @@ class ApiService {
     });
   };
 
-  static getStates = (countryId: number): Promise<AxiosResponse> => {
+  static getStates = (countryId: string): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/location/states?country=${countryId}`)
@@ -123,7 +123,7 @@ class ApiService {
     });
   };
 
-  static getCities = (stateId: number): Promise<AxiosResponse> => {
+  static getCities = (stateId: string): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
         .get(`/api/location/cities?state=${stateId}`)
@@ -244,17 +244,11 @@ class ApiService {
 
   static confirmForgetPasswordOtp = (
     email: string,
-    opt: string
+    otp: string
   ): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer
-        .post(`/api/auth/forget-password-otp`, {
-          data: {
-            email: email,
-            otp: opt,
-          },
-          withCredentials: true,
-        })
+        .post(`/api/auth/confirm-password-otp`, {email, otp})
         .then((response) => {
           return resolve(response);
         })

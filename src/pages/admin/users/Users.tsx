@@ -29,7 +29,7 @@ const Users = () => {
   useEffect(() => {
     ApiService.getCustomers()
       .then((results) => {
-        // console.log("customers", results.data);
+        console.log("customers", results.data);
         dispatch(setCustomers(results.data));
       }).catch((err) => {
         console.log("customers", err);
@@ -100,8 +100,8 @@ const Users = () => {
                                   dispatch(setCustomers(customers.filter((c: ICustomer) => c.id !== customer.id)));
                                 }
                               }).catch((error) => {
-                                notify('Customer deleted.');
-                                console.log(error);
+                                notify('Error deleting customer.');
+                                console.log(error.response.data);
                               })
                           }}
                           variant="outlined"

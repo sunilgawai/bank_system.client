@@ -6,20 +6,10 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import PageLayout from '../../layout/PageLayout';
 import { useAppSelector } from '../../store/hooks';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const location: {
-    countries: any[];
-    states: any[];
-    cities: any[];
-} = {
-    countries: [],
-    states: [],
-    cities: []
-}
 
 const Customer = () => {
     const { customer } = useAppSelector((state) => state.auth);
-    console.log('c', customer);
+    // console.log('c', customer);
 
     if (!customer) {
         return <div>Loading...</div>

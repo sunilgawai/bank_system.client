@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-
+import { useEffect, useState } from 'react';
 // material-ui
 import { Button, Divider, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Select, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -10,7 +10,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // third party
-import dayjs from 'dayjs';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import PageLayout from '../../../layout/PageLayout';
@@ -19,6 +18,8 @@ import ApiService from '../../../services/ApiService';
 // Notification import.
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LocationService from '../../../services/LocationService';
+import dayjs from 'dayjs';
 
 const initCustomerData = {
   first_name: '',
@@ -26,7 +27,7 @@ const initCustomerData = {
   last_name: '',
   phone: '',
   email: '',
-  date_of_birth: '',
+  date_of_birth: '2022-04-17',
   gender: '',
   document_type: '',
   document_number: '',
@@ -52,6 +53,23 @@ const location: {
 
 const Create = () => {
   const notify = (message: string) => toast(message);
+  const [location, setLocation] = useState<any>({
+    states: [],
+    districts: [],
+    cities: []
+  });
+
+  useEffect(() => {
+    LocationService.getLocation()
+      .then((response) => {
+        // console.log('states', response);
+        setLocation(response.data);
+      })
+      .catch((errors) => {
+        console.log(errors);
+      });
+  }, [])
+
 
   return (
     <>
@@ -79,6 +97,7 @@ const Create = () => {
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             setStatus({ success: true });
+            setSubmitting(false);
             console.log("values", values)
             ApiService.storeCustomer(values)
               .then((response) => {
@@ -216,11 +235,12 @@ const Create = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Date Of Birth"
-                        value={values.date_of_birth}
+                        // value={values.date_of_birth}
                         onChange={(newValue) => {
-                          const formattedDate = dayjs(newValue).format('DD-MM-YYYY');
-                          // console.log("DOB", { formattedDate, newValue })
-                          setFieldValue('date_of_birth', formattedDate); // Set the selected date using setFieldValue
+                          // @ts-ignore
+                          const date = new Date(newValue!).toLocaleDateString()
+                          console.log(date);
+                          setFieldValue('date_of_birth', date);
                         }}
                       />
                     </LocalizationProvider>
@@ -316,30 +336,15 @@ const Create = () => {
                       name="state"
                       label="state"
                       onBlur={handleBlur}
-                      onChange={(e) => {
-                        handleChange(e);
-                        // ApiService.getCities(e.target.value)
-                        //   .then((response) => {
-                        //     setLocation({
-                        //       ...location,
-                        //       cities: response.data
-                        //     });
-                        //   })
-                        //   .catch((errors) => {
-                        //     console.log(errors);
-                        //   });
-                      }}
+                      onChange={handleChange}
                       value={values.state}
                       error={Boolean(touched.state && errors.state)}
                     >
-                      {/* {location.states.map((state) => (
-                      <MenuItem key={state.id} value={state.id}>
-                        {state.name}
-                      </MenuItem>
-                    ))} */}
-                      <MenuItem value='maharashtra'>
-                        Maharashtra
-                      </MenuItem>
+                      {
+                        location.states.map((state: any) => <MenuItem key={state.id} value={state.state_title}>
+                          {state.state_title}
+                        </MenuItem>)
+                      }
                     </Select>
                     {touched.state && errors.state && (
                       <FormHelperText error id="helper-text-last_name-signup">
@@ -363,14 +368,11 @@ const Create = () => {
                       value={values.city}
                       error={Boolean(touched.city && errors.city)}
                     >
-                      {/* {location.cities.map((city: object) => (
-                      <MenuItem key={city.id} value={city.id}>
-                        {city.name}
-                      </MenuItem>
-                    ))} */}
-                      <MenuItem value='pune'>
-                        Pune
-                      </MenuItem>
+                      {
+                        location.cities.map((city: any) => <MenuItem key={city.id} value={city.name}>
+                          {city.name}
+                        </MenuItem>)
+                      }
                     </Select>
                     {touched.city && errors.city && (
                       <FormHelperText error id="helper-text-last_name-signup">
@@ -394,14 +396,11 @@ const Create = () => {
                       value={values.district}
                       error={Boolean(touched.district && errors.district)}
                     >
-                      {/* {location.cities.map((city: object) => (
-                      <MenuItem key={city.id} value={city.id}>
-                        {city.name}
-                      </MenuItem>
-                    ))} */}
-                      <MenuItem value='haveli'>
-                        haveli
-                      </MenuItem>
+                      {
+                        location.districts.map((district: any, i: number) => <MenuItem key={i} value={district.district_title}>
+                          {district.district_title}
+                        </MenuItem>)
+                      }
                     </Select>
                     {touched.district && errors.district && (
                       <FormHelperText error id="helper-text-last_name-signup">

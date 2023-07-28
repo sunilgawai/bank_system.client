@@ -64,7 +64,9 @@ const Login = () => {
                 setLoading(false)
             }).catch((error) => {
                 setLoading(false)
+                setError(error.response.data.message);
                 console.log('error', error);
+                setTimeout(() => setError(''), 2000);
             })
     }
 
@@ -153,7 +155,7 @@ const Login = () => {
                                     {loading && (
                                         <CgSpinner size={20} className="mt-1 animate-spin" />
                                     )}
-                                    <span>Send code via Email</span>
+                                    <span>{error ? error : 'Send code via Email'}</span>
                                 </button>
                                 <button
                                     onClick={() => {

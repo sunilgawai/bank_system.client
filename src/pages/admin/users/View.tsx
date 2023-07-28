@@ -9,23 +9,25 @@ import PageLayout from '../../../layout/PageLayout';
 import { ICustomer } from '../../../types';
 import ApiService from '../../../services/ApiService';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
 const View = () => {
     const { id } = useParams();
     const [customer, setCustomer] = useState<ICustomer>({} as ICustomer);
     useEffect(() => {
         if (!id) return;
         ApiService.viewCustomer(id).then((response) => {
-            // console.log("customer", response.data);
+            console.log("customer", response.data);
             if (response.status === 200) {
                 setCustomer(response.data);
             }
         }).catch((err) => {
-            // notify('error loading customer.');
             console.log("err", err)
         })
     }, [])
+
+    // console.log("customer", customer);
+    if (Object.keys(customer).length === 0) {
+        return <div>Loading</div>
+    }
 
     return (
         <>
@@ -46,12 +48,12 @@ const View = () => {
                         gender: customer.gender || '',
                         document_type: customer?.document?.document_type || '',
                         document_number: customer?.document?.document_number || '',
-                        state: customer.address.state || '',
-                        city: customer.address.city || '',
-                        district: customer.address.district || '',
-                        landmark: customer.address.landmark || '',
-                        account_type: customer.account.account_type || '',
-                        account_balance: customer.account.account_balance || '',
+                        state: customer?.address?.state || '',
+                        city: customer?.address?.city || '',
+                        district: customer?.address?.district || '',
+                        landmark: customer?.address?.landmark || '',
+                        account_type: customer?.account?.account_type || '',
+                        account_balance: customer?.account?.account_balance || '',
                         submit: ''
                     }}
                     validationSchema={Yup.object().shape({
@@ -68,7 +70,7 @@ const View = () => {
                                         <OutlinedInput
                                             id="document_number"
                                             type="document_number"
-                                            value={'First Name'}
+                                            value={customer.first_name}
                                             name="document_number"
                                             onBlur={handleBlur}
                                             placeholder="John"
@@ -82,7 +84,7 @@ const View = () => {
                                         <OutlinedInput
                                             id="middle_name"
                                             type="middle_name"
-                                            value={'Middle Name'}
+                                            value={customer.middle_name}
                                             name="middle_name"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -97,7 +99,7 @@ const View = () => {
                                             fullWidth
                                             id="last_name-signup"
                                             type="last_name"
-                                            value={'Last Name'}
+                                            value={customer.last_name}
                                             name="last_name"
                                             onBlur={handleBlur}
                                             placeholder="Doe"
@@ -112,7 +114,7 @@ const View = () => {
                                         <OutlinedInput
                                             fullWidth
                                             id="phone-signup"
-                                            value={'Phone No.'}
+                                            value={customer.phone}
                                             name="phone"
                                             onBlur={handleBlur}
                                             placeholder="Phone No."
@@ -127,7 +129,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Email'}
+                                            value={customer.email}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -143,7 +145,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'30/09/2001'}
+                                            value={customer.date_of_birth}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -159,7 +161,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Gender'}
+                                            value={customer.gender}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -175,7 +177,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Document Type'}
+                                            value={customer.document.document_type}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -190,7 +192,7 @@ const View = () => {
                                         <OutlinedInput
                                             id="document_number"
                                             type="document_number"
-                                            value={'Document No.'}
+                                            value={customer.document.document_number}
                                             name="document_number"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -206,7 +208,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'India'}
+                                            value={customer.address.country}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -222,7 +224,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Maharashtra'}
+                                            value={customer.address.state}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -238,7 +240,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'City'}
+                                            value={customer.address.city}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -254,7 +256,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'District'}
+                                            value={customer.address.district}
                                             name="email"
                                             onBlur={handleBlur}
                                             placeholder="demo@phone.com"
@@ -269,7 +271,7 @@ const View = () => {
                                         <OutlinedInput
                                             fullWidth
                                             id="landmark"
-                                            value={'Landmark'}
+                                            value={customer.address.landmark}
                                             name="landmark"
                                             onBlur={handleBlur}
                                             onChange={handleChange}
@@ -285,7 +287,7 @@ const View = () => {
                                             fullWidth
                                             id="email-login"
                                             type="email"
-                                            value={'Account Type'}
+                                            value={customer.account.account_type}
                                             name="email"
                                             placeholder="demo@phone.com"
                                             readOnly={true}
@@ -299,7 +301,7 @@ const View = () => {
                                         <OutlinedInput
                                             fullWidth
                                             id="account_balance"
-                                            value={'9999.56'}
+                                            value={customer.account.account_balance}
                                             name="account_balance"
                                             placeholder="Account Balance"
                                             inputProps={{}}

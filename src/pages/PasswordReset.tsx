@@ -32,11 +32,13 @@ const PasswordReset = () => {
   const [form, setForm] = useState({ email: '', otp: '' });
 
   const requestForgetPasswordOtp = () => {
+    setLoading(true);
     ApiService.requestForgetPasswordOtp(form.email)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
           setShowOTP(true);
+          setLoading(false);
         }
         if (response.status === 401) {
           setError(response.data.message);
@@ -50,14 +52,19 @@ const PasswordReset = () => {
   }
 
   const confirmForgetPasswordOtp = async () => {
-    ApiService.confirmForgetPasswordOtp(form.email, form.otp)
+    // console.log(form, otp)
+    setLoading(true);
+    ApiService.confirmForgetPasswordOtp(form.email, otp)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
           // setShowOTP(true);
+          navigate('../');
+          setLoading(false);
         }
         if (response.status === 401) {
           setError(response.data.message);
+          setTimeout(() => setError(''), 2000);
         }
         setLoading(false)
       }).catch((error) => {
@@ -104,7 +111,7 @@ const PasswordReset = () => {
                   className="opt-container "
                 ></OtpInput>
                 <button
-                  onClick={requestForgetPasswordOtp}
+                  onClick={confirmForgetPasswordOtp}
                   className="bg-emerald-600 w-full flex gap-1 items-center justify-center py-2.5 text-white rounded"
                 >
                   {loading && (

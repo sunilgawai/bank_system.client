@@ -23,7 +23,7 @@ const Home = () => {
 
         <div className="w-[50%] flex justify-center align-center flex-col">
           <div className="w-full mt-12">
-            <img className="w-full h-full mx-4 align-center" src="/bank_img.jpg" alt="bank" />
+            <img className="w-full h-full mx-4 align-center" src="/bank_home.jpg" alt="bank" />
           </div>
         </div>
 
