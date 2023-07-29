@@ -19,7 +19,7 @@ const userSlice = createSlice({
   reducers: {
     setAuth: (state, action) => {
       const data = action.payload;
-      console.log("data", data);
+      // console.log("data", data);
       localStorage.setItem("auth", JSON.stringify(data));
       state = {
         isAuthenticated: true,

@@ -6,9 +6,8 @@ import OtpInput from "otp-input-react";
 import { useState } from "react";
 // import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { toast, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { OutlinedInput } from "@mui/material";
-import axios from "axios";
 
 import ApiService from "../services/ApiService";
 import { setAuth } from "../store/authSlice";
@@ -19,17 +18,15 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
     const navigate = useNavigate();
     const [otp, setOtp] = useState("");
-    const [ph, setPh] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [showOTP, setShowOTP] = useState(false);
     const [optScreen, setOtpScreen] = useState(false);
-    const [resetPassScreen, setResetPassScreen] = useState(false);
 
     // Auth
     const dispatch = useAppDispatch();
 
-    const [form, setForm] = useState({ email: 'sunilgawai@gmail.com', password: 'Sunil@123' });
+    const [form, setForm] = useState({ email: '', password: '' });
     const handleVerifyAndLogin = () => {
         ApiService.verifyOtp({ ...form, otp })
             .then((response) => {
@@ -47,10 +44,10 @@ const Login = () => {
                 }
                 setLoading(false)
             }).catch((error) => {
+                console.log('error', error);
                 setLoading(false)
                 setError(error.response.data.message);
                 setTimeout(() => setError(''), 2000);
-                console.log('error', error);
             })
     }
 
@@ -58,6 +55,7 @@ const Login = () => {
         setLoading(true)
         ApiService.getOtp(form)
             .then((response) => {
+                // console.log(response)
                 if (response.status === 200) {
                     setShowOTP(true);
                 }
@@ -65,7 +63,7 @@ const Login = () => {
             }).catch((error) => {
                 setLoading(false)
                 setError(error.response.data.message);
-                console.log('error', error);
+                // console.log('error', error);
                 setTimeout(() => setError(''), 2000);
             })
     }

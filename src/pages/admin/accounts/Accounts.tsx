@@ -28,7 +28,7 @@ const Accounts = () => {
     AccountService.getAccounts()
       .then((results) => {
         setAccounts(results.data);
-        console.log("accounts", results.data);
+        // console.log("accounts", results.data);
       }).catch((err) => {
         console.log("accounts", err);
       })

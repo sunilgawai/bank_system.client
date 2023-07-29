@@ -23,6 +23,19 @@ class AccountService {
     });
   };
 
+  static getAccountLogs = (): Promise<AxiosResponse> => {
+    return new Promise((resolve, reject) => {
+      this.apiServer
+        .get("/api/admin/accounts/logs")
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
+
   static viewAccounts = (id: string): Promise<AxiosResponse> => {
     return new Promise((resolve, reject) => {
       this.apiServer

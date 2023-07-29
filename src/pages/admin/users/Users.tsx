@@ -29,7 +29,7 @@ const Users = () => {
   useEffect(() => {
     ApiService.getCustomers()
       .then((results) => {
-        console.log("customers", results.data);
+        // console.log("customers", results.data);
         dispatch(setCustomers(results.data));
       }).catch((err) => {
         console.log("customers", err);
