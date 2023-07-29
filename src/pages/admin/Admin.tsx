@@ -28,7 +28,7 @@ const Admin = () => {
 
   useEffect(() => {
     AccountService.getAllDetails().then((response) => {
-      console.log(response);
+      // console.log(response);
       setDetails(response.data)
       setLogs(response.data.logs);
       // console.log('details', details);
